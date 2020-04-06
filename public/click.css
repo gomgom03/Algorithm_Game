@@ -1,0 +1,13 @@
+body{
+    margin: 0;
+}
+
+#gameContainer{
+    text-align:center;
+    width: 100%;
+}
+
+.ssdom{
+    display: inline-block;
+    text-align:center;
+}
