@@ -1,10 +1,4 @@
-//Variable instantiation
-
-let docWidth = window.innerWidth;
-let docHeight = window.innerHeight;
-const gameContainerDiv = document.querySelector('#gameContainer');
-
-
+//importing files
 let game_export;
 import('/game_export.js')
     .then((mod) => {
@@ -12,27 +6,48 @@ import('/game_export.js')
         startGame();
     })
 
-let ISObject;
+let gameMode = "Insertion";
+const sortList = ["Insertion"];
+const swapList = ["Selection"];
+//Variable instantiation
+let docWidth = window.innerWidth;
+let docHeight = window.innerHeight;
+const gameContainerDiv = document.querySelector('#gameContainer');
+let SortObject;
 let domElements = [];
-let sortable;
+let dragObj;
+
+//window event listeners
+window.addEventListener('resize', () => {
+    docWidth = window.innerWidth;
+    docHeight = window.innerHeight;
+    createDomElements(SortObject.positionValues);
+})
+
+//Start function
 function startGame() {
-    ISObject = new game_export.InsertionSort();
-    ISObject.generateArray(10);
-    //console.log(ISObject.positionValues, ISObject.solution, ISObject.solutionLength)
-    createDomElements(ISObject.positionValues);
+    if(!gameMode||(!sortList.includes(gameMode)||swapList.includes(gameMode))){
+        throw "Game Start Error"
+    }
+    
+    SortObject = new game_export[`${gameMode}Sort`]();
+    SortObject.generateArray(10);
+    createDomElements(SortObject.positionValues);
+    if(sortList.includes(gameMode)){
+        dragObj = new Draggable.Sortable(gameContainerDiv, {
+            draggable: '.sdom',
+            mirror: {
+                constrainDimensions: true,
+                cursorOffsetX: docWidth * 0.8 / domElements.length / 2
+            }
+        });
+    }
+    
 
-    sortable = new Draggable.Sortable(gameContainerDiv, {
-        draggable: '.ssdom',
-        mirror: {
-            constrainDimensions: true,
-            cursorOffsetX: docWidth * 0.8 / domElements.length / 2
-        }
-    });
-
-    sortable.on('sortable:stop', () => {
+    dragObj.on('sortable:stop', () => {
         let i = setInterval(() => {
             if (document.querySelectorAll('.draggable-source--is-dragging').length == 0) {
-                ISObject.checkSolution([...gameContainerDiv.children].map(x => Number(x.innerText))) ? null : createDomElements(ISObject.positionValues);
+                SortObject.checkSolution([...gameContainerDiv.children].map(x => Number(x.innerText))) ? null : createDomElements(SortObject.positionValues);
                 clearInterval(i);
             }
         }, 10)
@@ -51,7 +66,7 @@ function createDomElements(pvs) {
     for (let i = 0; i < pvs.length; i++) {
         let tempElem = document.createElement('div');
         tempElem.innerText = pvs[i];
-        tempElem.className = 'ssdom';
+        tempElem.className = 'sdom';
         tempElem.draggable = true;
         gameContainerDiv.appendChild(tempElem);
         tempElem.style.width = tempElem.style.height = docWidth * 0.8 / pvs.length + 'px';
@@ -63,11 +78,7 @@ function createDomElements(pvs) {
     //now code the thing that verifies the next move is the same and clear and redraw if it aint.
 }
 
-window.addEventListener('resize', () => {
-    docWidth = window.innerWidth;
-    docHeight = window.innerHeight;
-    createDomElements(ISObject.positionValues);
-})
+
 
 
 //hello there
