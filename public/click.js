@@ -1,4 +1,5 @@
 //importing files
+let socket = io();
 let game_export;
 import('/game_export.js')
     .then((mod) => {
@@ -6,14 +7,15 @@ import('/game_export.js')
         startGame();
     })
 
-let gameMode = "Insertion";
+//let gameMode = prompt("which sort");
+let gameMode = "MaxHeap";
 const sortList = ["Insertion"];
-const swapList = ["Selection"];
+const swapList = ["Selection", "Bubble","MaxHeap"];
 //Variable instantiation
 let docWidth = window.innerWidth;
 let docHeight = window.innerHeight;
 const gameContainerDiv = document.querySelector('#gameContainer');
-let SortObject;
+let ExportedObject;
 let domElements = [];
 let dragObj;
 
@@ -21,18 +23,19 @@ let dragObj;
 window.addEventListener('resize', () => {
     docWidth = window.innerWidth;
     docHeight = window.innerHeight;
-    createDomElements(SortObject.positionValues);
+    createDomElements(ExportedObject.positionValues);
 })
 
 //Start function
 function startGame() {
-    if(!gameMode||(!sortList.includes(gameMode)||swapList.includes(gameMode))){
+    if(!gameMode||(!sortList.includes(gameMode)&&!swapList.includes(gameMode))){
         throw "Game Start Error"
     }
     
-    SortObject = new game_export[`${gameMode}Sort`]();
-    SortObject.generateArray(10);
-    createDomElements(SortObject.positionValues);
+    ExportedObject = new game_export[`${gameMode}Sort`]();
+    ExportedObject.generateArray(10);
+    createDomElements(ExportedObject.positionValues);
+
     if(sortList.includes(gameMode)){
         dragObj = new Draggable.Sortable(gameContainerDiv, {
             draggable: '.sdom',
@@ -41,17 +44,32 @@ function startGame() {
                 cursorOffsetX: docWidth * 0.8 / domElements.length / 2
             }
         });
+        dragObj.on('sortable:stop', () => {
+            dragEndFunc();
+        });
+    }else{
+        dragObj = new Draggable.Swappable(gameContainerDiv, {
+            draggable: '.sdom',
+            mirror: {
+                constrainDimensions: true,
+                cursorOffsetX: docWidth * 0.8 / domElements.length / 2
+            }
+        });
+        dragObj.on('swappable:stop', () => {
+            dragEndFunc();
+        });
     }
     
-
-    dragObj.on('sortable:stop', () => {
+    function dragEndFunc(){
         let i = setInterval(() => {
             if (document.querySelectorAll('.draggable-source--is-dragging').length == 0) {
-                SortObject.checkSolution([...gameContainerDiv.children].map(x => Number(x.innerText))) ? null : createDomElements(SortObject.positionValues);
+                ExportedObject.checkSolution([...gameContainerDiv.children].map(x => Number(x.innerText))) ? null : createDomElements(ExportedObject.positionValues);
                 clearInterval(i);
             }
         }, 10)
-    });
+    }
+
+    
 
 
 }

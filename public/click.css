@@ -7,7 +7,23 @@ body{
     width: 100%;
 }
 
-.ssdom{
+.sdom{
     display: inline-block;
     text-align:center;
+    border-top-width:2px;
+    border-color:white;
+    border-style: solid;
+}
+
+
+.draggable-source--is-dragging{
+    border-color:blue;
+}
+
+.draggable-mirror{
+    border-color:black;
+}
+
+#gameContainer:focus{
+    outline: none;
 }
