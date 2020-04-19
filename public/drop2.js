@@ -11049,9 +11049,19 @@
         let ExportedObject;
         let domElements = [];
         let dragObj;
+        let curCircle = 1;
 
         const circleIds = [];
         //window event listeners
+        const keyState = {};
+        window.addEventListener('keydown', function (e) {
+
+            e.code.includes('Digit') ? e.code == 'Digit0' ? curCircle = 10 : curCircle = Number((e.code.split('Digit'))[1]) : null;
+            e.code.includes('Arrow') ? keyState[e.code] = true : null;
+        }, true);
+        window.addEventListener('keyup', function (e) {
+            keyState[e.code] = false;
+        }, true);
 
 
         //Start function
@@ -11086,10 +11096,6 @@
             let engine = Engine.create(),
                 world = engine.world;
 
-            Events.on(engine, 'collisionStart', (event) => {
-                console.log(event, [...event.pairs]);
-            })
-
             let render = Render.create({
                 element: document.body,
                 engine: engine,
@@ -11107,43 +11113,47 @@
             Runner.run(runner, engine);
 
             const contXRatio = 1 * (numArrayValues + 1) * 2;
-            const contYRatio = 10;
+            const contYRatio = 5;
             const contXInner = 1.05 * (numArrayValues + 1) * 2;
-            const contYInner = contYRatio * 5;
+            const contYInner = contYRatio * 1.1;
             const holderBodies = [];
             const circleElems = [];
+            const curCirclePositions = [];
             for (let i = 0; i < numArrayValues; i++) {
-                holderBodies.push(Bodies.fromVertices(docWidth / (numArrayValues + 1) * (i + 1), docHeight * 0.99, Vertices.fromPath(`${-docWidth / contXRatio} ${docHeight / contYRatio} ${-docWidth / contXRatio} 0 ${docWidth / contXRatio} 0 ${docWidth / contXRatio} ${docHeight / contYRatio} ${docWidth / contXInner} ${docHeight / contYRatio} ${docWidth / contXInner} ${docHeight / contYInner} ${-docWidth / contXInner} ${docHeight / contYInner} ${-docWidth / contXInner} ${docHeight / contYRatio}`), {
+                holderBodies.push(Bodies.fromVertices(docWidth / (numArrayValues + 1) * (i + 1), docHeight * 0.95, Vertices.fromPath(`${-docWidth / contXRatio} ${docHeight / contYRatio} ${-docWidth / contXRatio} 0 ${docWidth / contXRatio} 0 ${docWidth / contXRatio} ${docHeight / contYRatio} ${docWidth / contXInner} ${docHeight / contYRatio} ${docWidth / contXInner} ${docHeight / contYInner} ${-docWidth / contXInner} ${docHeight / contYInner} ${-docWidth / contXInner} ${docHeight / contYRatio}`), {
                     render: {
                         fillStyle: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
                         strokeStyle: '#000000',
                         lineWidth: 1,
-                    }
+                    },
+                    id: `holder${i + 1}`
                 }));
-                let tempCircle = Bodies.circle(docWidth / (numArrayValues + 1) * (i + 1), docHeight * 0.9, docWidth / (numArrayValues + 1) / 4, {
+                let tempCircle = Bodies.circle(docWidth / (numArrayValues + 1) * (i + 1), 0, docWidth / (numArrayValues + 1) / 4, {
                     render: {
                         sprite: {
-                            texture: `DropSprites/sprite${i+1}.png`,
-                            xScale: docWidth/(numArrayValues+1)*0.00256,
-                            yScale: docWidth/(numArrayValues+1)*0.00256
-                          }
+                            texture: `DropSprites/sprite${i + 1}.png`,
+                            xScale: docWidth / (numArrayValues + 1) * 0.00256,
+                            yScale: docWidth / (numArrayValues + 1) * 0.00256
+                        }
                     },
-                    density: 0.001,
-                    friction: 0.7,
+                    density: 0.005,
+                    friction: 0.8,
                     frictionStatic: 0,
                     frictionAir: 0.01,
-                    restitution: 0.5,
+                    restitution: 0.3,
                     ground: false,
+                    id: `circle${i + 1}`
                 })
                 circleElems.push(tempCircle);
+                curCirclePositions.push(tempCircle);
                 circleIds.push(tempCircle.id)
             }
             holderBodies.forEach((x) => { Body.rotate(x, Math.PI); Body.setStatic(x, true); })
 
-            
-            
 
-            World.add(world,circleElems);
+
+
+            World.add(world, circleElems);
             World.add(world,
                 holderBodies
             );
@@ -11184,11 +11194,80 @@
                         fillStyle: 'transparent',
                         lineWidth: 1
                     }
+                }),
+                //experiment
+                Bodies.rectangle(docWidth / 2, docHeight*0.7, docWidth*0.6, worldWidth, {
+                    isStatic: true,
+                    render: {
+                        fillStyle: 'transparent',
+                        lineWidth: 1
+                    },
+                    id: 'holder'
                 })
             ]
 
 
             World.add(world, wallBodies);
+
+            const curCollisions = {}
+
+            Events.on(engine, 'collisionStart', (event) => {
+                
+                event.pairs.forEach(x => {
+                    x.bodyA.id === `circle${curCircle}` && ((y)=>{for(let i = 0;i<y.activeContacts.length;i++){if(y.activeContacts[i].normalImpulse===0){return false}};return true})(x)? curCollisions[x.bodyA.id] = true : null;
+                    x.bodyB.id === `circle${curCircle}` && ((y)=>{for(let i = 0;i<y.activeContacts.length;i++){if(y.activeContacts[i].normalImpulse===0){return false}};return true})(x)? curCollisions[x.bodyB.id] = true : null;
+                });
+                /*
+                event.pairs.forEach(x => {
+                    typeof x.bodyA.id === 'string' && typeof x.bodyB.id === 'string' && x.bodyA.id.includes('circle') && x.bodyB.id.includes('holder') ? curCollisions[x.bodyA.id] = true : null;
+                    typeof x.bodyA.id === 'string' && typeof x.bodyB.id === 'string' && x.bodyB.id.includes('circle') && x.bodyA.id.includes('holder') ? curCollisions[x.bodyB.id] = true : null;
+                });
+                */
+            })
+            Events.on(engine, 'collisionActive', (event) => {
+                
+                event.pairs.forEach(x => {
+                    console.log(x.activeContacts[0].normalImpulse)
+                    x.bodyA.id === `circle${curCircle}` && ((y)=>{for(let i = 0;i<y.activeContacts.length;i++){if(y.activeContacts[i].normalImpulse===0){return false}};return true})(x)? curCollisions[x.bodyA.id] = true : null;
+                    x.bodyB.id === `circle${curCircle}` && ((y)=>{for(let i = 0;i<y.activeContacts.length;i++){if(y.activeContacts[i.normalImpulse]===0){return false}};return true})(x)? curCollisions[x.bodyB.id] = true : null;
+                });
+                /*
+                event.pairs.forEach(x => {
+                    typeof x.bodyA.id === 'string' && typeof x.bodyB.id === 'string' && x.bodyA.id.includes('circle') && x.bodyB.id.includes('holder') ? curCollisions[x.bodyA.id] = true : null;
+                    typeof x.bodyA.id === 'string' && typeof x.bodyB.id === 'string' && x.bodyB.id.includes('circle') && x.bodyA.id.includes('holder') ? curCollisions[x.bodyB.id] = true : null;
+                });
+                */
+            })
+            Events.on(engine, 'collisionEnd', (event) => {
+                event.pairs.forEach(x => {
+                    x.bodyA.id === `circle${curCircle}`? curCollisions[x.bodyA.id] = false : null;
+                    x.bodyB.id === `circle${curCircle}`? curCollisions[x.bodyB.id] = false : null;
+                });
+                /*
+                event.pairs.forEach(x => {
+                    typeof x.bodyA.id === 'string' && typeof x.bodyB.id === 'string' && x.bodyA.id.includes('circle') && x.bodyB.id.includes('holder') ? curCollisions[x.bodyA.id] = false : null;
+                    typeof x.bodyA.id === 'string' && typeof x.bodyB.id === 'string' && x.bodyB.id.includes('circle') && x.bodyA.id.includes('holder') ? curCollisions[x.bodyB.id] = false : null;
+                });
+                */
+            })
+
+
+            const torqueConst = 0;
+            const jumpConst = Math.pow((docWidth / (numArrayValues + 1)), 2) / 5000;
+            console.log(jumpConst)
+            //EventListeners
+            Events.on(runner, "beforeTick", () => {
+                if (curCollisions[`circle${curCircle}`]) {
+                    keyState['ArrowUp'] || keyState['Space'] ? circleElems[curCircle - 1].force = { x: 0, y: -0.3 * jumpConst } : null;
+                }
+                
+                keyState['ArrowRight'] && circleElems[curCircle - 1].angularVelocity < 0.4 ? circleElems[curCircle - 1].torque = 0.4 : null;
+                keyState['ArrowLeft'] && circleElems[curCircle - 1].angularVelocity > -0.4 ? circleElems[curCircle - 1].torque = -0.4 : null;
+                //console.log(circleElems[curCircle-1].angularVelocity)
+            })
+
+
+
         }
         createMatter();
 
