@@ -11113,9 +11113,9 @@
             Runner.run(runner, engine);
 
             const contXRatio = 1 * (numArrayValues + 1) * 2;
-            const contYRatio = 5;
-            const contXInner = 1.05 * (numArrayValues + 1) * 2;
-            const contYInner = contYRatio * 1.1;
+            const contYRatio = 1;
+            const contXInner = 1.1 * (numArrayValues + 1) * 2;
+            const contYInner = contYRatio * 4;
             const holderBodies = [];
             const circleElems = [];
             const curCirclePositions = [];
@@ -11128,7 +11128,7 @@
                     },
                     id: `holder${i + 1}`
                 }));
-                let tempCircle = Bodies.circle(docWidth / (numArrayValues + 1) * (i + 1), 0, docWidth / (numArrayValues + 1) / 4, {
+                let tempCircle = Bodies.circle(docWidth / (numArrayValues + 1) * (i + 1), docHeight*0.2, docWidth / (numArrayValues + 1) / 4, {
                     render: {
                         sprite: {
                             texture: `DropSprites/sprite${i + 1}.png`,
@@ -11195,6 +11195,7 @@
                         lineWidth: 1
                     }
                 }),
+                /*
                 //experiment
                 Bodies.rectangle(docWidth / 2, docHeight*0.7, docWidth*0.6, worldWidth, {
                     isStatic: true,
@@ -11204,11 +11205,12 @@
                     },
                     id: 'holder'
                 })
+                */
             ]
 
 
             World.add(world, wallBodies);
-
+            /*
             const curCollisions = {}
 
             Events.on(engine, 'collisionStart', (event) => {
@@ -11217,13 +11219,14 @@
                     x.bodyA.id === `circle${curCircle}` && ((y)=>{for(let i = 0;i<y.activeContacts.length;i++){if(y.activeContacts[i].normalImpulse===0){return false}};return true})(x)? curCollisions[x.bodyA.id] = true : null;
                     x.bodyB.id === `circle${curCircle}` && ((y)=>{for(let i = 0;i<y.activeContacts.length;i++){if(y.activeContacts[i].normalImpulse===0){return false}};return true})(x)? curCollisions[x.bodyB.id] = true : null;
                 });
-                /*
+                
                 event.pairs.forEach(x => {
                     typeof x.bodyA.id === 'string' && typeof x.bodyB.id === 'string' && x.bodyA.id.includes('circle') && x.bodyB.id.includes('holder') ? curCollisions[x.bodyA.id] = true : null;
                     typeof x.bodyA.id === 'string' && typeof x.bodyB.id === 'string' && x.bodyB.id.includes('circle') && x.bodyA.id.includes('holder') ? curCollisions[x.bodyB.id] = true : null;
                 });
-                */
+                
             })
+    
             Events.on(engine, 'collisionActive', (event) => {
                 
                 event.pairs.forEach(x => {
@@ -11231,24 +11234,24 @@
                     x.bodyA.id === `circle${curCircle}` && ((y)=>{for(let i = 0;i<y.activeContacts.length;i++){if(y.activeContacts[i].normalImpulse===0){return false}};return true})(x)? curCollisions[x.bodyA.id] = true : null;
                     x.bodyB.id === `circle${curCircle}` && ((y)=>{for(let i = 0;i<y.activeContacts.length;i++){if(y.activeContacts[i.normalImpulse]===0){return false}};return true})(x)? curCollisions[x.bodyB.id] = true : null;
                 });
-                /*
+                
                 event.pairs.forEach(x => {
                     typeof x.bodyA.id === 'string' && typeof x.bodyB.id === 'string' && x.bodyA.id.includes('circle') && x.bodyB.id.includes('holder') ? curCollisions[x.bodyA.id] = true : null;
                     typeof x.bodyA.id === 'string' && typeof x.bodyB.id === 'string' && x.bodyB.id.includes('circle') && x.bodyA.id.includes('holder') ? curCollisions[x.bodyB.id] = true : null;
                 });
-                */
+                
             })
             Events.on(engine, 'collisionEnd', (event) => {
                 event.pairs.forEach(x => {
                     x.bodyA.id === `circle${curCircle}`? curCollisions[x.bodyA.id] = false : null;
                     x.bodyB.id === `circle${curCircle}`? curCollisions[x.bodyB.id] = false : null;
                 });
-                /*
+                
                 event.pairs.forEach(x => {
                     typeof x.bodyA.id === 'string' && typeof x.bodyB.id === 'string' && x.bodyA.id.includes('circle') && x.bodyB.id.includes('holder') ? curCollisions[x.bodyA.id] = false : null;
                     typeof x.bodyA.id === 'string' && typeof x.bodyB.id === 'string' && x.bodyB.id.includes('circle') && x.bodyA.id.includes('holder') ? curCollisions[x.bodyB.id] = false : null;
                 });
-                */
+                
             })
 
 
@@ -11266,7 +11269,7 @@
                 //console.log(circleElems[curCircle-1].angularVelocity)
             })
 
-
+            */
 
         }
         createMatter();

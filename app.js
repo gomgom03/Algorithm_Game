@@ -23,6 +23,10 @@ app.get('/drop', (req, res) => {
     res.render('drop.ejs');
 })
 
+app.get('/drop2',(req,res)=>{
+    res.render('drop2.ejs')
+})
+
 const io = require('socket.io')(server);
 io.on('connection', (socket) => {
     console.log(`Established connection with socket ${socket.id}`);
