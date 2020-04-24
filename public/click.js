@@ -8,7 +8,7 @@ import('/game_export.js')
     })
 
 //let gameMode = prompt("which sort");
-let gameMode = "MaxHeap";
+let gameMode = "Bubble";
 const sortList = ["Insertion"];
 const swapList = ["Selection", "Bubble","MaxHeap"];
 //Variable instantiation

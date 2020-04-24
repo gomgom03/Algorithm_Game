@@ -3,12 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sort-Home</title>
+    <title>CS Algorithm Practice</title>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <a href="/click">Click</a>
+    <h1 id="title">CS Algorithm Practice</h1>
+    <input type="text" placeholder="Name" id = "nameField"/>
+    
+    <select id="selectUser">
+        <option value="none" selected disabled hidden>Select an Option</option> 
+        <option value = "SPractice">Practice</option>
+        <option value="SGroup">Group</option>
+        <option value="TGroup">Teacher - Group</option>
+    </select>
+    <select id="gameMode">
+        <option value="none" selected disabled hidden>Select an Option</option>
+        <option value="click">Click</option>
+        <option value="drop">Drop</option>
+        <option value="drop2">Drop 2</option>
+    </select>
     <a href="/drop">Drop</a>
     <a href="/drop2">Drop 2 - Testing</a>
+    <button id="goButton">GO</button>
     <script src="home.js"></script>
 </body>
 </html>
