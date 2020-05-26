@@ -1,29 +1,33 @@
-body{
-    margin: 0;
+body {
+  margin: 0;
 }
 
-#gameContainer{
-    text-align:center;
-    width: 100%;
+#gameContainer {
+  text-align: center;
+  width: 100%;
 }
 
-.sdom{
-    display: inline-block;
-    text-align:center;
-    border-top-width:2px;
-    border-color:white;
-    border-style: solid;
+.sdom {
+  display: inline-block;
+  text-align: center;
+  border-top-width: 2px;
+  border-color: white;
+  border-style: solid;
 }
 
-
-.draggable-source--is-dragging{
-    border-color:blue;
+.draggable-source--is-dragging {
+  border-color: blue;
 }
 
-.draggable-mirror{
-    border-color:black;
+.draggable-mirror {
+  border-color: black;
 }
 
-#gameContainer:focus{
-    outline: none;
+#gameContainer:focus {
+  outline: none;
+}
+
+#message {
+  color: white;
+  transition-duration: 0.7s;
 }

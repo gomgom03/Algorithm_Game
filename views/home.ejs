@@ -1,30 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CS Algorithm Practice</title>
-    <script src="/socket.io/socket.io.js"></script>
-</head>
-<body>
-    <h1 id="title">CS Algorithm Practice</h1>
-    <input type="text" placeholder="Name" id = "nameField"/>
-    
-    <select id="selectUser">
-        <option value="none" selected disabled hidden>Select an Option</option> 
-        <option value = "SPractice">Practice</option>
-        <option value="SGroup">Group</option>
-        <option value="TGroup">Teacher - Group</option>
-    </select>
-    <select id="gameMode">
-        <option value="none" selected disabled hidden>Select an Option</option>
-        <option value="click">Click</option>
-        <option value="drop">Drop</option>
-        <option value="drop2">Drop 2</option>
-    </select>
-    <a href="/drop">Drop</a>
-    <a href="/drop2">Drop 2 - Testing</a>
-    <button id="goButton">GO</button>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  </head>
+  <body class="text-center">
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+      <div class="jumbotron">
+        <div class="p-4">
+          <h1 class="h1 display-1">CS Algorithm Practice</h1>
+        </div>
+
+        <main role="main" class="inner-cover">
+          <div class="container lead p-2">
+            <span class="h2">Algorithm: </span>
+            <select
+              id="gameAlgorithm"
+              class="browser-default custom-select m-3"
+            >
+              <option value="none" selected disabled hidden
+                >Select an Option</option
+              >
+              <option value="Selection">Selection Sort</option>
+              <option value="Insertion">Insertion Sort</option>
+              <option value="Bubble">Bubble Sort</option>
+              <option value="MaxHeap">Max Heap Sort</option>
+            </select>
+          </div>
+          <div class="container lead p-2">
+            <span class="h2">Game Mode: </span>
+            <select id="gameMode" class="browser-default custom-select m-3">
+              <option value="none" selected disabled hidden
+                >Select an Option</option
+              >
+              <option value="click">Click</option>
+              <option value="drop">Drop</option>
+              <option value="drop2">Drop 2 - in progress?</option>
+            </select>
+          </div>
+          <div class="container lead p-1">
+            <span class="h2">Number of Values:</span>
+          </div>
+          <div class="container lead p-2">
+            <input
+              type="number"
+              id="numValues"
+              class="number-input md-number-input"
+            />
+          </div>
+        </main>
+        <button
+          type="button"
+          class="btn btn-secondary btn-lg m-5"
+          onclick="handleGo()"
+        >
+          GO
+        </button>
+      </div>
+      <footer class="mastfoot mt-auto">
+        Created by Hyun Min (Eddie) Kim
+      </footer>
+    </div>
     <script src="home.js"></script>
-</body>
+  </body>
 </html>

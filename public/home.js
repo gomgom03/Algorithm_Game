@@ -1,70 +1,52 @@
-//Socket Work
-let socket = io();
-socket.on('socketPreCheck', () => {
-    let userID = sessionStorage.getItem('userID') || null;
-    socket.emit('socketPreResponse', { userID: userID })
-    console.log('socketPreCheck')
-})
-socket.on('userInfo', (data) => {
-    sessionStorage.setItem('userID', data.id)
-    console.log('called')
-})
+/*
+<h1 id="title">CS Algorithm Practice</h1>
+    <div>
+      <span>Algorithm: </span>
+      <select id="gameAlgorithm">
+        <option value="none" selected disabled hidden>Select an Option</option>
+        <option value="selectionSort">Selection Sort</option>
+        <option value="insertionSort">Insertion Sort</option>
+        <option value="bubbleSort">Bubble Sort</option>
+        <option value="mergeSort">Merge Sort</option>
+        <option value="maxHeapSort">Max Heap Sort</option>
+      </select>
+    </div>
+    <div>
+      <span>Game Mode: </span>
+      <select id="gameMode">
+        <option value="none" selected disabled hidden>Select an Option</option>
+        <option value="click">Click</option>
+        <option value="drop">Drop</option>
+        <option value="drop2">Drop 2</option>
+      </select>
+    </div>
+    <div>
+      <span>Number of Values:</span>
+      <select id="numValues">
+        <option value="none" selected disabled hidden>Select an Option</option>
+        <option value="click">Click</option>
+        <option value="drop">Drop</option>
+        <option value="drop2">Drop 2</option>
+      </select>
+    </div>
+    <button onclick="handleGo()">GO</button>
+*/
 
+const gameAlgorithm = document.querySelector("#gameAlgorithm"),
+  gameMode = document.querySelector("#gameMode"),
+  numValues = document.querySelector("#numValues");
 
-//Render Work
-const goButton = document.querySelector('#goButton'),
-    selectUser = document.querySelector('#selectUser'),
-    gameMode = document.querySelector('#gameMode'),
-    nameField = document.querySelector('#nameField');
-
-let sortSelect = null;
-
-const sortModes = ["Insertion", "Bubble", "MaxHeap", "Selection"];
-
-const sortModeCases = {
-    click: sortModes.slice(0, 4),
-    drop: sortModes.slice(1, 4),
-    drop2: sortModes.slice(0, 1)
-}
-
-function start() {
-    sortSelect = document.createElement('select');
-    document.body.insertBefore(sortSelect, document.body.lastChild)
-}
-start();
-
-
-function createSortMode(gm) {
-
-    let noneOption = document.createElement('option');
-    noneOption.value = "none";
-    noneOption.selected = true;
-    noneOption.disabled = true;
-    noneOption.hidden = true;
-    noneOption.text = 'Select an Option'
-    sortSelect.add(noneOption);
-    for (let i = 0; i < sortModeCases[gameMode.value].length; i++) {
-        let optionElem = document.createElement('option');
-        optionElem.value = sortModeCases[gm.value][i];
-        optionElem.text = `${sortModeCases[gm.value][i]} Sort`
-        sortSelect.add(optionElem);
-    }
-}
-
-gameMode.addEventListener('change', () => {
-    createSortMode(gameMode)
-});
-
-goButton.addEventListener('click', () => {
-    console.log(selectUser.value !== 'none', gameMode.value !== 'none', sortSelect != null, sortSelect.value !== 'none')
-    nameField.value != null && selectUser.value !== 'none' && gameMode.value !== 'none' && sortSelect != null && sortSelect.value !== 'none' ? socket.emit('userChange', {
-        userID: sessionStorage.getItem('userID'),
-        replacement: {
-            curSelectedUser: selectUser.value,
-            curGameMode: gameMode.value,
-            curSortMode: sortSelect.value,
-            name: nameField.value
-        }
-    }) : console.log('not all filled');
-    window.location.href = `/${gameMode.value}`
-})
+const handleGo = () => {
+  let algVal = gameAlgorithm.value;
+  let modeVal = gameMode.value;
+  let numVal = parseInt(numValues.value);
+  algVal !== "none" && modeVal !== "none" && !isNaN(numVal)
+    ? (numVal >= 6 && numVal <= 10 && modeVal === "drop") || modeVal !== "drop"
+      ? algVal === "Insertion" && modeVal === "drop"
+        ? swal("Combination invalid")
+        : (sessionStorage.setItem("alg", algVal),
+          sessionStorage.setItem("val", numVal),
+          (window.location.href = `/${modeVal}`))
+      : swal("You need to have values from 6 to 10 inclusive")
+    : swal("Please fill out every field. ");
+};
