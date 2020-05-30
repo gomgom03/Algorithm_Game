@@ -15,12 +15,15 @@ const swapList = ["Selection", "Bubble", "MaxHeap"];
 //Variable instantiation
 let docWidth = window.innerWidth;
 let docHeight = window.innerHeight;
-const gameContainerDiv = document.querySelector("#gameContainer");
+let gameContainerDiv = document.querySelector("#gameContainer");
 const messageElem = document.querySelector("#message");
-messageElem.style.opacity = 0;
+document.querySelector("#sortType").textContent = `Sort Type: ${gameMode}`
+
 let ExportedObject;
 let domElements = [];
 let dragObj;
+let time;
+let tempTimeout;
 
 //window event listeners
 window.addEventListener("resize", () => {
@@ -29,17 +32,24 @@ window.addEventListener("resize", () => {
   createDomElements(ExportedObject.positionValues);
 });
 
-function showMessage(message, color) {
+function showMessage(message, color, option) {
   messageElem.style.backgroundColor = color;
   messageElem.textContent = message;
   messageElem.style.opacity = 1;
-  setTimeout(() => {
-    messageElem.style.opacity = 0;
-  }, 1000);
+  let optionType = typeof option;
+  optionType === "function"
+    ? option()
+    : optionType === "number"
+      ? tempTimeout = setTimeout(() => {
+        messageElem.style.opacity = 0;
+      }, 1000)
+      : null;
 }
 
 //Start function
 function startGame() {
+  messageElem.style.opacity = 0;
+  time = Date.now();
   if (
     !gameMode ||
     (!sortList.includes(gameMode) && !swapList.includes(gameMode))
@@ -83,8 +93,27 @@ function startGame() {
         ExportedObject.checkSolution(
           [...gameContainerDiv.children].map((x) => Number(x.innerText))
         )
-          ? showMessage("Correct", "#30f000")
-          : (showMessage("Incorrect", "red"),
+          ? ExportedObject.solutionStep !== ExportedObject.solutionLength
+            ? showMessage("Correct", "#30f000", 1000)
+            : showMessage(
+              `You're done! It took ${
+              Math.round((Date.now() - time) / 10) / 100
+              } seconds to solve. Click this to play again.`,
+              "#828282",
+              () => {
+                clearTimeout(tempTimeout)
+                messageElem.addEventListener("click", startOver);
+                function startOver() {
+                  messageElem.removeEventListener("click", startOver);
+                  console.log("called");
+                  let replDiv = gameContainerDiv.cloneNode(true);
+                  gameContainerDiv.parentNode.replaceChild(replDiv, gameContainerDiv);
+                  gameContainerDiv = replDiv;
+                  startGame();
+                }
+              }
+            )
+          : (showMessage("Incorrect", "red", 1000),
             createDomElements(ExportedObject.positionValues));
         clearInterval(i);
       }

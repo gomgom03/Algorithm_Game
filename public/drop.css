@@ -2,3 +2,16 @@ body{
     margin:0;
     overflow: hidden;
 }
+
+#messageDiv{
+    position: absolute;
+    background-color:#828282;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    top:10%;
+    color:white;
+    opacity:0;
+    transition-duration:0.7s;
+}
