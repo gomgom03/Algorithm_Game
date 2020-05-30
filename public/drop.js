@@ -17,7 +17,8 @@ let ExportedObject;
 let domElements = [];
 let dragObj;
 let time;
-const messageElem = document.querySelector('#messageDiv')
+const messageElem = document.querySelector('#messageDiv');
+const queryDiv = document.querySelector('#queryDiv');
 
 //window event listeners
 window.addEventListener("resize", () => {
@@ -32,6 +33,7 @@ import("/game_export.js").then((mod) => {
 
 //Start function
 function startGame() {
+  queryDiv.style.opacity = 1;
   time = Date.now();
   if (!gameMode && !swapList.includes(gameMode)) {
     throw "Game Start Error";
@@ -299,9 +301,11 @@ function createMatter() {
   //createMatter();
 
   Events.on(engine, "collisionStart", (event) => {
+
     let pairCounted = false;
     event.pairs.forEach((x) => {
       if (x.bodyA.id.includes("circle") && x.bodyB.id.includes("circle")) {
+        queryDiv.style.opacity = 0;
         if (pairCounted) {
           throw "Multiple Circle Collision Error";
         }
